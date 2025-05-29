@@ -86,12 +86,23 @@ const handleFormSubmission = () => {
     
     if (form) {
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
+            // Remove preventDefault to allow form submission to Formspree
+            const formData = new FormData(form);
             
-            // Here you would typically send the form data to a server
-            // For now, we'll just show an alert
-            alert('Thank you for your message! This form is not connected to a backend yet.');
-            form.reset();
+            // Show loading state
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
+
+            // Formspree will handle the submission and redirect
+            // We'll show a success message when the page loads with ?success=true
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                alert('Thank you for your message! I will get back to you soon.');
+                // Clear the success parameter from the URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         });
     }
 };
